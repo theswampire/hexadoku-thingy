@@ -19,6 +19,7 @@ export default function App() {
     values: [],
     locked: [],
   });
+  const [startFromOne, setStartFromOne] = useState(false);
 
   function updateSudoku(s: main.Sudoku) {
     setSudoku(s);
@@ -79,21 +80,31 @@ export default function App() {
           </button>
         </form>
 
-        <button
-          className="bg-neutral-800 text-neutral-100 py-1 rounded w-20 hover:bg-neutral-700 active:bg-neutral-950 h-fit m-4"
-          onClick={lockSudoku}
-        >
-          Lock
-        </button>
-        <button
-          className="bg-neutral-800 text-neutral-100 py-1 rounded w-20 hover:bg-neutral-700 active:bg-neutral-950 h-fit m-4"
-          onClick={unlockSudoku}
-        >
-          Unlock
-        </button>
+        <div className="flex flex-col justify-end items-start p-4 gap-2">
+          <div className="flex gap-3">
+            <label>Start from 1:</label>
+            <input
+              type="checkbox"
+              onChange={() => setStartFromOne(!startFromOne)}
+              className=""
+            />
+          </div>
+          <button
+            className="bg-neutral-800 text-neutral-100 py-1 rounded w-20 hover:bg-neutral-700 active:bg-neutral-950 h-fit"
+            onClick={lockSudoku}
+          >
+            Lock
+          </button>
+          <button
+            className="bg-neutral-800 text-neutral-100 py-1 rounded w-20 hover:bg-neutral-700 active:bg-neutral-950 h-fit"
+            onClick={unlockSudoku}
+          >
+            Unlock
+          </button>
+        </div>
       </div>
 
-      <Sudoku matrix={matrix} sudoku={sudoku} />
+      <Sudoku matrix={matrix} sudoku={sudoku} startFromOne={startFromOne} />
     </div>
   );
 }
@@ -101,9 +112,10 @@ export default function App() {
 type SudokuProps = {
   matrix: MutableRefObject<number[][]>;
   sudoku: main.Sudoku;
+  startFromOne: boolean;
 };
 
-function Sudoku({ sudoku, matrix }: SudokuProps) {
+function Sudoku({ sudoku, matrix, startFromOne }: SudokuProps) {
   const fields: ReactNode[] = new Array(sudoku.size * sudoku.size);
 
   for (let i = 0; i < sudoku.size; i++) {
@@ -115,6 +127,7 @@ function Sudoku({ sudoku, matrix }: SudokuProps) {
           j={j}
           value={matrix.current[i][j]}
           sudoku={sudoku}
+          startFromOne={startFromOne}
         />
       );
     }
@@ -137,9 +150,10 @@ type SudokuField = {
   j: number;
   value: number;
   sudoku: main.Sudoku;
+  startFromOne: boolean;
 };
 
-function SudokuField({ i, j, value: v, sudoku }: SudokuField) {
+function SudokuField({ i, j, value: v, sudoku, startFromOne }: SudokuField) {
   const [value, setValue] = useState(v);
   const [valid, setValid] = useState(true);
   const [possibles, setPossibles] = useState<number[]>([]);
@@ -176,9 +190,12 @@ function SudokuField({ i, j, value: v, sudoku }: SudokuField) {
       v = -1;
     } else {
       v = parseInt(e.currentTarget.value, 16);
+      if (startFromOne) {
+        v -= 1;
+      }
     }
 
-    if (v > sudoku.size || v < -1 || Number.isNaN(v)) return;
+    if (v >= sudoku.size || v < -1 || Number.isNaN(v)) return;
 
     setValid(true);
     try {
@@ -193,7 +210,7 @@ function SudokuField({ i, j, value: v, sudoku }: SudokuField) {
   return (
     <div className="relative bg-white overflow-hidden w-10 h-10">
       <input
-        value={displayValue(value)}
+        value={displayValue(value, startFromOne)}
         className={`block w-full h-full text-center disabled:bg-neutral-200 ${value != -1 ? "bg-blue-100" : ""} ${!valid ? "bg-red-500" : ""}`}
         type="text"
         onChange={onChange}
@@ -206,7 +223,7 @@ function SudokuField({ i, j, value: v, sudoku }: SudokuField) {
   );
 }
 
-function displayValue(value: number) {
+function displayValue(value: number, fromOne: boolean) {
   if (value === -1 || value === undefined) return "";
-  return value.toString(16).toUpperCase();
+  return (fromOne ? value + 1 : value).toString(16).toUpperCase();
 }

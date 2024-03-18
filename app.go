@@ -119,7 +119,7 @@ func NewSudoku(size int) *Sudoku {
 }
 
 func (s *Sudoku) validInitConstraints(x, y, value int) bool {
-	return x < s.Size && y < s.Size && value <= s.Size && value >= -1
+	return x < s.Size && y < s.Size && value < s.Size && value >= -1
 }
 
 func (s *Sudoku) InitCell(x, y, value int) error {
