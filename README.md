@@ -1,9 +1,12 @@
-# README
+# README for a hastily hacked hexadoku hinter
 
 Well, it's a tool that I hacked in one day to give hints for what values are possible in a hexadoku. 
 Don't try creating sudokus with sizes other than 9 and 16, it'll probably just give you something weird.
 And the values are always starting from 0. So if you try it for normal sudokus, you'll have to add 1 to all values :)
 
+What I learned or realized: 
+- I think I just became a baby gopher! Why didn't I try Go earlier
+- I realized that using react for such things is kind of / sort of / definitely a mentally underperforming decision. Why would anyone want to manage state in 2 different places?
 
 ## About
 
