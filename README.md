@@ -1,5 +1,10 @@
 # README
 
+Well, it's a tool that I hacked in one day to give hints for what values are possible in a hexadoku. 
+Don't try creating sudokus with sizes other than 9 and 16, it'll probably just give you something weird.
+And the values are always starting from 0. So if you try it for normal sudokus, you'll have to add 1 to all values :)
+
+
 ## About
 
 This is the official Wails React-TS template.
