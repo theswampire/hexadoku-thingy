@@ -82,7 +82,7 @@ export default function App() {
 
         <div className="flex flex-col justify-end items-start p-4 gap-2">
           <div className="flex gap-3">
-            <label>Start from 1:</label>
+            <label>From 1:</label>
             <input
               type="checkbox"
               onChange={() => setStartFromOne(!startFromOne)}
@@ -208,7 +208,9 @@ function SudokuField({ i, j, value: v, sudoku, startFromOne }: SudokuField) {
   }
 
   return (
-    <div className="relative bg-white overflow-hidden w-10 h-10">
+    <div
+      className={`relative bg-white overflow-hidden w-10 h-10 ${border(i, j, sudoku.size)}`}
+    >
       <input
         value={displayValue(value, startFromOne)}
         className={`block w-full h-full text-center disabled:bg-neutral-200 ${value != -1 ? "bg-blue-100" : ""} ${!valid ? "bg-red-500" : ""}`}
@@ -217,7 +219,9 @@ function SudokuField({ i, j, value: v, sudoku, startFromOne }: SudokuField) {
         disabled={sudoku.locked[i][j]}
       />
       <p className="text-[9px] absolute right-[1px] bottom-0">
-        {possibles.map((x) => x.toString(16).toUpperCase())}
+        {possibles.map((x) =>
+          (startFromOne ? x + 1 : x).toString(16).toUpperCase(),
+        )}
       </p>
     </div>
   );
@@ -226,4 +230,19 @@ function SudokuField({ i, j, value: v, sudoku, startFromOne }: SudokuField) {
 function displayValue(value: number, fromOne: boolean) {
   if (value === -1 || value === undefined) return "";
   return (fromOne ? value + 1 : value).toString(16).toUpperCase();
+}
+
+function border(i: number, j: number, size: number) {
+  const block = Math.floor(Math.sqrt(size));
+
+  let style = ["border-black"];
+  if ((i % block) + 1 == block && i < size - 1) {
+    style.push("border-b");
+  }
+
+  if ((j % block) + 1 == block && j < size - 1) {
+    style.push("border-r");
+  }
+
+  return style.join(" ");
 }
